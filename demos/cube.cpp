@@ -406,7 +406,7 @@ static void pointer_handle_motion(void *data, struct wl_pointer *pointer, uint32
 
 static void pointer_handle_button(void *data, struct wl_pointer *wl_pointer, uint32_t serial, uint32_t time, uint32_t button,
                                   uint32_t state) {
-    Demo *demo = (Demo *)data;    
+    Demo *demo = (Demo *)data;
     if (button == BTN_LEFT && state == WL_POINTER_BUTTON_STATE_PRESSED) {
         wl_shell_surface_move(demo->shell_surface, demo->seat, serial);
     }
@@ -495,56 +495,56 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
 #elif defined(VK_USE_PLATFORM_MIR_KHR)
 #endif
 
-    Demo::Demo()
-        :
+Demo::Demo()
+    :
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-          connection{nullptr},
-          window{nullptr},
-          minsize(POINT{0, 0}),  // Use explicit construction to avoid MSVC error C2797.
+      connection{nullptr},
+      window{nullptr},
+      minsize(POINT{0, 0}),  // Use explicit construction to avoid MSVC error C2797.
 #endif
 
 #if defined(VK_USE_PLATFORM_XLIB_KHR)
-          xlib_window{0},
-          xlib_wm_delete_window{0},
-          display{nullptr},
+      xlib_window{0},
+      xlib_wm_delete_window{0},
+      display{nullptr},
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
-          xcb_window{0},
-          screen{nullptr},
-          connection{nullptr},
+      xcb_window{0},
+      screen{nullptr},
+      connection{nullptr},
 #elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
-          display{nullptr},
-          registry{nullptr},
-          compositor{nullptr},
-          window{nullptr},
-          shell{nullptr},
-          shell_surface{nullptr},
-          seat{nullptr},
-          pointer{nullptr},
-          keyboard{nullptr},
+      display{nullptr},
+      registry{nullptr},
+      compositor{nullptr},
+      window{nullptr},
+      shell{nullptr},
+      shell_surface{nullptr},
+      seat{nullptr},
+      pointer{nullptr},
+      keyboard{nullptr},
 #elif defined(VK_USE_PLATFORM_MIR_KHR)
 #endif
-          prepared{false},
-          use_staging_buffer{false},
-          use_xlib{false},
-          graphics_queue_family_index{0},
-          present_queue_family_index{0},
-          enabled_extension_count{0},
-          enabled_layer_count{0},
-          width{0},
-          height{0},
-          swapchainImageCount{0},
-          frame_index{0},
-          spin_angle{0.0f},
-          spin_increment{0.0f},
-          pause{false},
-          quit{false},
-          curFrame{0},
-          frameCount{0},
-          validate{false},
-          use_break{false},
-          suppress_popups{false},
-          current_buffer{0},
-          queue_family_count{0} {
+      prepared{false},
+      use_staging_buffer{false},
+      use_xlib{false},
+      graphics_queue_family_index{0},
+      present_queue_family_index{0},
+      enabled_extension_count{0},
+      enabled_layer_count{0},
+      width{0},
+      height{0},
+      swapchainImageCount{0},
+      frame_index{0},
+      spin_angle{0.0f},
+      spin_increment{0.0f},
+      pause{false},
+      quit{false},
+      curFrame{0},
+      frameCount{0},
+      validate{false},
+      use_break{false},
+      suppress_popups{false},
+      current_buffer{0},
+      queue_family_count{0} {
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
         memset(name, '\0', APP_NAME_STR_LEN);
 #endif
@@ -569,9 +569,9 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
                 .setImage(buffers[i].image)
                 .setSubresourceRange(vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 
-        buffers[i].graphics_to_present_cmd.pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                                           vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::DependencyFlagBits(),
-                                                           0, nullptr, 0, nullptr, 1, &image_ownership_barrier);
+        buffers[i].graphics_to_present_cmd.pipelineBarrier(
+            vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eColorAttachmentOutput,
+            vk::DependencyFlagBits(), 0, nullptr, 0, nullptr, 1, &image_ownership_barrier);
 
         result = buffers[i].graphics_to_present_cmd.end();
         VERIFY(result == vk::Result::eSuccess);
@@ -839,8 +839,9 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
                     .setImage(buffers[current_buffer].image)
                     .setSubresourceRange(vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
 
-            commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eBottomOfPipe,
-                                          vk::DependencyFlagBits(), 0, nullptr, 0, nullptr, 1, &image_ownership_barrier);
+            commandBuffer.pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput,
+                                          vk::PipelineStageFlagBits::eBottomOfPipe, vk::DependencyFlagBits(), 0, nullptr, 0,
+                                          nullptr, 1, &image_ownership_barrier);
         }
 
         result = commandBuffer.end();
@@ -1844,7 +1845,10 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
 
         vk::PipelineShaderStageCreateInfo const shaderStageInfo[2] = {
             vk::PipelineShaderStageCreateInfo().setStage(vk::ShaderStageFlagBits::eVertex).setModule(prepare_vs()).setPName("main"),
-            vk::PipelineShaderStageCreateInfo().setStage(vk::ShaderStageFlagBits::eFragment).setModule(prepare_fs()).setPName("main")};
+            vk::PipelineShaderStageCreateInfo()
+                .setStage(vk::ShaderStageFlagBits::eFragment)
+                .setModule(prepare_fs())
+                .setPName("main")};
 
         vk::PipelineVertexInputStateCreateInfo const vertexInputInfo;
 
@@ -1864,8 +1868,10 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
 
         auto const multisampleInfo = vk::PipelineMultisampleStateCreateInfo();
 
-        auto const stencilOp =
-            vk::StencilOpState().setFailOp(vk::StencilOp::eKeep).setPassOp(vk::StencilOp::eKeep).setCompareOp(vk::CompareOp::eAlways);
+        auto const stencilOp = vk::StencilOpState()
+                                   .setFailOp(vk::StencilOp::eKeep)
+                                   .setPassOp(vk::StencilOp::eKeep)
+                                   .setCompareOp(vk::CompareOp::eAlways);
 
         auto const depthStencilInfo = vk::PipelineDepthStencilStateCreateInfo()
                                           .setDepthTestEnable(VK_TRUE)
@@ -1877,8 +1883,9 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
                                           .setBack(stencilOp);
 
         vk::PipelineColorBlendAttachmentState const colorBlendAttachments[1] = {
-            vk::PipelineColorBlendAttachmentState().setColorWriteMask(vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
-                                                                      vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA)};
+            vk::PipelineColorBlendAttachmentState().setColorWriteMask(
+                vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB |
+                vk::ColorComponentFlagBits::eA)};
 
         auto const colorBlendInfo =
             vk::PipelineColorBlendStateCreateInfo().setAttachmentCount(1).setPAttachments(colorBlendAttachments);
@@ -1974,8 +1981,8 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         return module;
     }
 
-    void Demo::prepare_texture_image(const char *filename, texture_object *tex_obj, vk::ImageTiling tiling, vk::ImageUsageFlags usage,
-                                     vk::MemoryPropertyFlags required_props) {
+    void Demo::prepare_texture_image(const char *filename, texture_object *tex_obj, vk::ImageTiling tiling,
+                                     vk::ImageUsageFlags usage, vk::MemoryPropertyFlags required_props) {
         int32_t tex_width;
         int32_t tex_height;
         if (!loadTexture(filename, nullptr, nullptr, &tex_width, &tex_height)) {
@@ -2018,7 +2025,8 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         VERIFY(result == vk::Result::eSuccess);
 
         if (required_props & vk::MemoryPropertyFlagBits::eHostVisible) {
-            auto const subres = vk::ImageSubresource().setAspectMask(vk::ImageAspectFlagBits::eColor).setMipLevel(0).setArrayLayer(0);
+            auto const subres =
+                vk::ImageSubresource().setAspectMask(vk::ImageAspectFlagBits::eColor).setMipLevel(0).setArrayLayer(0);
             vk::SubresourceLayout layout;
             device.getImageSubresourceLayout(tex_obj->image, &subres, &layout);
 
@@ -2054,7 +2062,8 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
             } else if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage) {
                 /* Must use staging buffer to copy linear texture to optimized */
 
-                prepare_texture_image(tex_files[i], &staging_texture, vk::ImageTiling::eLinear, vk::ImageUsageFlagBits::eTransferSrc,
+                prepare_texture_image(tex_files[i], &staging_texture, vk::ImageTiling::eLinear,
+                                      vk::ImageUsageFlagBits::eTransferSrc,
                                       vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
                 prepare_texture_image(tex_files[i], &textures[i], vk::ImageTiling::eOptimal,
@@ -2075,12 +2084,13 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
                                              .setBaseArrayLayer(0)
                                              .setLayerCount(1);
 
-                auto const copy_region = vk::ImageCopy()
-                                             .setSrcSubresource(subresource)
-                                             .setSrcOffset({0, 0, 0})
-                                             .setDstSubresource(subresource)
-                                             .setDstOffset({0, 0, 0})
-                                             .setExtent({(uint32_t)staging_texture.tex_width, (uint32_t)staging_texture.tex_height, 1});
+                auto const copy_region =
+                    vk::ImageCopy()
+                        .setSrcSubresource(subresource)
+                        .setSrcOffset({0, 0, 0})
+                        .setDstSubresource(subresource)
+                        .setDstOffset({0, 0, 0})
+                        .setExtent({(uint32_t)staging_texture.tex_width, (uint32_t)staging_texture.tex_height, 1});
 
                 cmd.copyImage(staging_texture.image, vk::ImageLayout::eTransferSrcOptimal, textures[i].image,
                               vk::ImageLayout::eTransferDstOptimal, 1, &copy_region);
@@ -2217,8 +2227,9 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         prepare();
     }
 
-    void Demo::set_image_layout(vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldLayout, vk::ImageLayout newLayout,
-                                vk::AccessFlags srcAccessMask, vk::PipelineStageFlags src_stages, vk::PipelineStageFlags dest_stages) {
+    void Demo::set_image_layout(vk::Image image, vk::ImageAspectFlags aspectMask, vk::ImageLayout oldLayout,
+                                vk::ImageLayout newLayout, vk::AccessFlags srcAccessMask, vk::PipelineStageFlags src_stages,
+                                vk::PipelineStageFlags dest_stages) {
         assert(cmd);
 
         auto DstAccessMask = [](vk::ImageLayout const &layout) {
@@ -2286,7 +2297,8 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         device.unmapMemory(uniform_data.mem);
     }
 
-    bool Demo::loadTexture(const char *filename, uint8_t *rgba_data, vk::SubresourceLayout *layout, int32_t *width, int32_t *height) {
+    bool Demo::loadTexture(const char *filename, uint8_t *rgba_data, vk::SubresourceLayout *layout, int32_t *width,
+                           int32_t *height) {
         FILE *fPtr = fopen(filename, "rb");
         if (!fPtr) {
             return false;
@@ -2441,9 +2453,9 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         windowAttributes.border_pixel = 0;
         windowAttributes.event_mask = KeyPressMask | KeyReleaseMask | StructureNotifyMask | ExposureMask;
 
-        xlib_window =
-            XCreateWindow(display, RootWindow(display, vInfoTemplate.screen), 0, 0, width, height, 0, visualInfo->depth, InputOutput,
-                          visualInfo->visual, CWBackPixel | CWBorderPixel | CWEventMask | CWColormap, &windowAttributes);
+        xlib_window = XCreateWindow(display, RootWindow(display, vInfoTemplate.screen), 0, 0, width, height, 0, visualInfo->depth,
+                                    InputOutput, visualInfo->visual, CWBackPixel | CWBorderPixel | CWEventMask | CWColormap,
+                                    &windowAttributes);
 
         XSelectInput(display, xlib_window, ExposureMask | KeyPressMask);
         XMapWindow(display, xlib_window);
@@ -2615,8 +2627,7 @@ static const wl_registry_listener registry_listener = {registry_handle_global, r
         while (!quit) {
             if (pause) {
                 wl_display_dispatch(display);
-            }
-            else {
+            } else {
                 wl_display_dispatch_pending(display);
                 update_data_buffer();
                 draw();
