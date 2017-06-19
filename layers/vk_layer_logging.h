@@ -40,6 +40,7 @@ typedef struct _debug_report_data {
     VkLayerDbgFunctionNode *default_debug_callback_list;
     VkFlags active_flags;
     bool g_DEBUG_REPORT;
+    std::unordered_map<uint64_t, std::string> debugObjectNameMap;
 } debug_report_data;
 
 template debug_report_data *GetLayerDataPtr<debug_report_data>(void *data_key,
@@ -119,8 +120,18 @@ static inline bool debug_report_log_msg(const debug_report_data *debug_data, VkF
 
     while (pTrav) {
         if (pTrav->msgFlags & msgFlags) {
-            if (pTrav->pfnMsgCallback(msgFlags, objectType, srcObject, location, msgCode, pLayerPrefix, pMsg, pTrav->pUserData)) {
-                bail = true;
+            auto it = debug_data->debugObjectNameMap.find(srcObject);
+            if (it == debug_data->debugObjectNameMap.end()) {
+                if (pTrav->pfnMsgCallback(msgFlags, objectType, srcObject, location, msgCode, pLayerPrefix, pMsg, pTrav->pUserData)) {
+                    bail = true;
+                }
+            } else {
+                char *newMsg = (char *)malloc(strlen(pMsg) + it->second.length() + 20);
+                sprintf(newMsg, "SrcObject name = %s ", it->second.c_str());
+                strcat(newMsg, pMsg);
+                if (pTrav->pfnMsgCallback(msgFlags, objectType, srcObject, location, msgCode, pLayerPrefix, newMsg, pTrav->pUserData)) {
+                    bail = true;
+                }
             }
         }
         pTrav = pTrav->pNext;

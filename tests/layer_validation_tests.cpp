@@ -912,6 +912,36 @@ TEST_F(VkLayerTest, ReservedParameter) {
     m_errorMonitor->VerifyFound();
 }
 
+TEST_F(VkLayerTest, CrapTest) {
+    ASSERT_NO_FATAL_FAILURE(InitFramework());
+    if (DeviceExtensionSupported(gpu(), "VK_LAYER_LUNARG_core_validation", VK_EXT_DEBUG_MARKER_EXTENSION_NAME )) {
+        m_device_extension_names.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME  );
+    } else {
+        printf("             Debug Marker Extension not supported, skipping tests\n");
+        return;
+    }
+    ASSERT_NO_FATAL_FAILURE(InitState());
+
+    PFN_vkDebugMarkerSetObjectNameEXT fpvkDebugMarkerSetObjectNameEXT =
+        (PFN_vkDebugMarkerSetObjectNameEXT)vkGetInstanceProcAddr(instance(), "vkDebugMarkerSetObjectNameEXT");
+    if (!(fpvkDebugMarkerSetObjectNameEXT)) {
+        printf("             Can't find fpvkDebugMarkerSetObjectNameEXT; skipped.\n");
+        return;
+    }
+
+    VkEvent event_handle = VK_NULL_HANDLE;
+    VkEventCreateInfo event_info = {};
+    event_info.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO;
+    vkCreateEvent(device(), &event_info, NULL, &event_handle);
+    VkDebugMarkerObjectNameInfoEXT name_info = {};
+    name_info.sType = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT;
+    name_info.pNext = nullptr;
+    name_info.object = (uint64_t) event_handle;
+    name_info.objectType = VK_DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT;
+    name_info.pObjectName = "Hork";
+    fpvkDebugMarkerSetObjectNameEXT(device(), &name_info);
+}
+
 TEST_F(VkLayerTest, InvalidStructSType) {
     TEST_DESCRIPTION(
         "Specify an invalid VkStructureType for a Vulkan "
