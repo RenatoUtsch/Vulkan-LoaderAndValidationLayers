@@ -48,6 +48,7 @@ layer_source_files = [
 '../layers/core_validation.cpp',
 '../layers/descriptor_sets.cpp',
 '../layers/parameter_validation.cpp',
+'../build/layers/parameter_validation.h',
 '../layers/object_tracker.cpp',
 '../layers/shader_validation.cpp',
 '../layers/buffer_validation.cpp',
